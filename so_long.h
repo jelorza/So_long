@@ -4,7 +4,7 @@
 #include<stdio.h>
 #include<unistd.h>
 #include<fcntl.h>
-#include "get_next_line.h"
+#include<stdlib.h>
 
 typedef struct map{
 	
@@ -15,7 +15,10 @@ typedef struct map{
 
 int		ft_strlen(char *str);
 void	ft_checkmap(char *argv, t_arg_map *map);
-void	ft_get_dimension(char *argv, t_arg_map *map);
+void	ft_get_height(char *argv, t_arg_map *map);
+void	ft_get_width(char *argv, t_arg_map *map);
+void	ft_check_line(char *line, int line_counter);
+char	*get_next_line(int fd);
 
 
 #endif

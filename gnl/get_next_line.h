@@ -6,7 +6,7 @@
 /*   By: jelorza- <jelorza-@student.42urduli>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 18:57:09 by jelorza-          #+#    #+#             */
-/*   Updated: 2022/04/25 20:44:27 by jelorza-         ###   ########.fr       */
+/*   Updated: 2022/04/26 11:52:52 by jelorza-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include<stdlib.h>
 # include<unistd.h>
 
-# define BUFFER_SIZE 5
+# define BUFFER_SIZE 1
 //gcc -g3 -fsanitize=address -Wall -Wextra -Werror get_next_line.c 
 //main_getNextLine.c get_next_line_utils.c
 
