@@ -10,6 +10,7 @@ typedef struct map{
 	
 	int	width;
 	int height;
+	int chars[3];
 	
 }	t_arg_map;
 
@@ -17,7 +18,7 @@ int		ft_strlen(char *str);
 void	ft_checkmap(char *argv, t_arg_map *map);
 void	ft_get_height(char *argv, t_arg_map *map);
 void	ft_get_width(char *argv, t_arg_map *map);
-void	ft_check_line(char *line, int line_counter);
+void	ft_check_line(char *line, int line_counter, t_arg_map *map);
 char	*get_next_line(int fd);
 
 

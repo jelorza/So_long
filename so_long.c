@@ -1,7 +1,6 @@
 #include "so_long.h"
 
-//primero gestiono el mapa. Para ello tengo que recojer las medidas del mapa y controlar los errores (es rectangular, esta bien cerrado, cada uno de los caracteres son correctos y por lo menos existe 1 de cada.
-//Para ello empezare a pasar el gnl y contar la altura y la anchura.
+//Ya tengo el control de errores, ahora empiezo con la minilib. Habrir ventana y empezar con las imagenes.
 
 int  main(int argc, char **argv)
 {
@@ -10,6 +9,7 @@ int  main(int argc, char **argv)
 	if (argc == 2 && argv[1][ft_strlen(argv[1]) -1] == 'r' && argv[1][ft_strlen(argv[1]) - 2] == 'e' && argv[1][ft_strlen(argv[1]) - 3] == 'b')
 	{
 		ft_checkmap(argv[1], &map);
+		ft_map_init(argv[1], &map);
 		printf("Height %d\n", map.height);
 		printf("Width %d\n", map.width);
 	}
@@ -17,19 +17,23 @@ int  main(int argc, char **argv)
 		printf("argv error");
 }
 
+void	ft_map_init(char *str, 
+
 void	ft_checkmap(char *argv, t_arg_map *map)
 {
 	ft_get_height(argv, map);
 	ft_get_width(argv, map);
-//	ft_check_errors(argv);
 }
 
 void	ft_get_width(char *argv, t_arg_map *map)
 {
 	int		fd;
 	char	*line;
-	int		i;;
-
+	int		i;
+	
+	map->chars[0] = 0;
+	map->chars[1] = 0;
+	map->chars[2] = 0;
 	i = 1;
 	fd = open(argv, O_RDONLY);
 	if (fd == -1)
@@ -41,30 +45,38 @@ void	ft_get_width(char *argv, t_arg_map *map)
 	map->width = ft_strlen(line);
 	while (line)
 	{
-		ft_check_line(line, i++);
+		ft_check_line(line, i++, map);
 		line = get_next_line(fd);
 		if (line)
 		{
-	//		printf("%d\n", ft_strlen(line));
 			if (ft_strlen(line) != map->width)
 			{
 				perror("El mapa no es rectangulo");
 				exit(1);
 			}
 		}
-	//	printf("%s\n",line);
 	}
 	map->width--;
 	close(fd);
+	if (map->chars[1] < 1 || map->chars[2] < 1)
+	{
+		perror("El mapa no contiene ni 'e' ni 'c'");
+		exit(1);
+	}
+	else if(map->chars[0] != 1)
+	{
+		perror("Algo pasa con el p");
+		exit(1);
+	}
 }
 
-void	ft_check_line(char *line, int line_counter)
+void	ft_check_line(char *line, int line_counter, t_arg_map *map)
 {
 	int i;
-	
-	printf("%d\n", line_counter);
+
 	i = 0;
-	if(line_counter == 1)
+	printf("%d\n", line_counter);
+	if(line_counter == 1 || line_counter == map->height)
 	{
 		while (i < ft_strlen(line) - 1)
 		{
@@ -77,8 +89,28 @@ void	ft_check_line(char *line, int line_counter)
 		}
 	}
 	else
-		printf("esta bien");
-
+	{
+		while (i < ft_strlen(line) - 1)
+		{
+			if (line[0] != '1' || line[map->width - 2] != '1')
+			{
+				perror("El mapa no esta cerrado correctamentee");
+				exit(1);
+			}
+			else if (line[i] != '1' && line[i] != '0' && line[i] != 'P' && line[i] != 'E' && line[i] != 'C')
+			{
+				perror("El mapa contiene caracteres incorrectos");
+				exit(1);
+			}
+			else if(line[i] == 'P')
+				map->chars[0]++;
+			else if(line[i] == 'C')
+				map->chars[1]++;
+			else if(line[i] == 'E')
+				map->chars[2]++;
+			i++;
+		}
+	}
 }
 
 void	ft_get_height(char *argv, t_arg_map *map)
