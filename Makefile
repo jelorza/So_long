@@ -9,15 +9,16 @@ FLAGS = -Wall -Wextra -Werror
 
 RM = rm -r -f
 MLX = -L mlx -lmlx -framework OpenGL -framework Appkit
+SAN = -g3 -fsanitize=address
 
 all: $(NAME)
 
 %.o: %.c
-	$(CC)  -Imlx -c $< -o $@
+	$(CC) -c $< -o $@ -Imlx
 
 $(NAME): $(OBJS)
 	make -C mlx/
-	$(CC) $(FLAGS) $^ $(MLX) -o $@
+	$(CC) $(FLAGS) $^ -o  $@ $(MLX)
 
 clean:
 	$(RM) $(OBJS)
