@@ -25,6 +25,7 @@ typedef struct mlx{
 	int		bits_per_pixel;
 	int		endian;
 	int		line_length;
+	char	key;
 
 }	t_mlx_mlx;
 
@@ -47,8 +48,10 @@ void	ft_get_map(t_arg_map *map, char *argv);
 void	ft_map_init(char *arg, t_arg_map *map, t_mlx_mlx *mlx);
 void	ft_create_map(t_arg_map *map, t_mlx_mlx *mlx);
 void	ft_create_wall_and_floor(t_arg_map *map, t_mlx_mlx *mlx);
-void	ft_create_objects(t_arg_map *map, t_mlx_mlx *mlx);
+void	ft_create_objects_and_exit(t_arg_map *map, t_mlx_mlx *mlx);
 void	ft_create_player(t_arg_map *map, t_mlx_mlx *mlx);
+void	ft_hooks(t_mlx_mlx *mlx, t_arg_map *map);
+void	ft_get_moves(t_arg_map *map, t_mlx_mlx *mlx);
 void	ft_free(t_arg_map *map);
 
 

@@ -1,6 +1,6 @@
 #include "so_long.h"
 
-//Tengo las imagenes credas. Ahora voy con la gestion de ls hooks y movimientos. Paa eso tengo que contar los objetos, y la posicion en la que esta el jugador. Pongo los contadores en el struct_map. Hago una funcion donde gestiono la tecla y la tecla la linko con una funcion ue haga el movimiento y cambie la imegen del mapa.
+//Tengo los hooks creados, voy con las funciones de los movimisntos
 
 int  main(int argc, char **argv)
 {
@@ -13,9 +13,10 @@ int  main(int argc, char **argv)
 		ft_get_map(&map, argv[1]);
 		ft_map_init(argv[1], &map, &mlx);
 		ft_create_map(&map, &mlx);
-		ft_hooks();
+		ft_hooks(&mlx, &map);
 		printf("Height %d\n", map.map_height);
 		printf("Width %d\n", map.map_width);
+		printf("C = %d\n", map.chars[1]);
 		ft_free(&map);
     	mlx_loop(mlx.mlx);
 	}
@@ -39,12 +40,49 @@ void	ft_free(t_arg_map *map)
 	free(map->map_data);
 }
 
+void	ft_get_moves(t_arg_map *map, t_mlx_mlx *mlx)
+{
+	if (mlx->key == 'w')
+		ft_move_p();
+	if (mlx->key == 'd')
+		ft_move_right();
+	if (mlx->key == 'a')
+		ft_move_left();
+	if (mlx->key == 's')
+		ft_move_down();
+	if (mlx->key == 'x')
+		ft_exit();
+	printf("%c\n", mlx->key);
+	
+}
+
+int	key_hook(int kc, t_arg_map *map, t_mlx_mlx *mlx)
+{
+	if (kc == 13)
+		mlx->key = 'w';
+	else if (kc == 2)
+		mlx->key = 'd';
+	else if (kc == 0)
+		mlx->key = 'a';
+	else if (kc == 1)
+		mlx->key = 's';
+	else if (kc == 53)
+		mlx->key = 'x';
+	if (kc == 13 || kc == 2 || kc == 0 || kc == 1 || kc == 53)
+		ft_get_moves(map, mlx);
+	return (0);
+}
+
+void	ft_hooks(t_mlx_mlx *mlx, t_arg_map *map)
+{
+	mlx_key_hook(mlx->win, key_hook, map);
+}
+
 void	ft_create_map(t_arg_map *map, t_mlx_mlx *mlx)
 {
 	ft_create_wall_and_floor(map, mlx);
-	ft_create_objects(map, mlx);
+	ft_create_objects_and_exit(map, mlx);
 	ft_create_player(map, mlx);
-//	ft_create_exit(map, mlx);
 }
 
 void	ft_create_player(t_arg_map *map, t_mlx_mlx *mlx)
@@ -68,7 +106,7 @@ void	ft_create_player(t_arg_map *map, t_mlx_mlx *mlx)
 	}
 }
 
-void	ft_create_objects(t_arg_map *map, t_mlx_mlx *mlx)
+void	ft_create_objects_and_exit(t_arg_map *map, t_mlx_mlx *mlx)
 {
 	t_mlx_img img;
 	int y;
