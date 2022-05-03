@@ -1,6 +1,6 @@
 #include "so_long.h"
 
-//Ya tengo el control de errores, ahora empiezo con la minilib. Habrir ventana y empezar con las imagenes.
+//Tengo las imagenes credas. Ahora voy con la gestion de ls hooks y movimientos. Paa eso tengo que contar los objetos, y la posicion en la que esta el jugador. Pongo los contadores en el struct_map. Hago una funcion donde gestiono la tecla y la tecla la linko con una funcion ue haga el movimiento y cambie la imegen del mapa.
 
 int  main(int argc, char **argv)
 {
@@ -12,10 +12,12 @@ int  main(int argc, char **argv)
 		ft_check_map(argv[1], &map);
 		ft_get_map(&map, argv[1]);
 		ft_map_init(argv[1], &map, &mlx);
-		ft_create_map(argv[1], &map, &mlx);
-		printf("Height %d\n", map.height);
-		printf("Width %d\n", map.width);
+		ft_create_map(&map, &mlx);
+		ft_hooks();
+		printf("Height %d\n", map.map_height);
+		printf("Width %d\n", map.map_width);
 		ft_free(&map);
+    	mlx_loop(mlx.mlx);
 	}
 	else
 		printf("argv error");
@@ -27,9 +29,9 @@ void	ft_free(t_arg_map *map)
 {
 	int i;
 
-	printf("Height %d\n", map->height);
+	printf("Height %d\n", map->map_height);
 	i = 0;
-	while (i < map->height)
+	while (i < map->map_height)
 	{
 		free(map->map_data[i]);
 		i++;
@@ -37,39 +39,86 @@ void	ft_free(t_arg_map *map)
 	free(map->map_data);
 }
 
-void	ft_create_map(char *arg, t_arg_map *map, t_mlx_mlx *mlx)
+void	ft_create_map(t_arg_map *map, t_mlx_mlx *mlx)
 {
-	mlx_clear_window(mlx->mlx, mlx->win);
-//	ft_create_background(
+	ft_create_wall_and_floor(map, mlx);
+	ft_create_objects(map, mlx);
+	ft_create_player(map, mlx);
+//	ft_create_exit(map, mlx);
+}
+
+void	ft_create_player(t_arg_map *map, t_mlx_mlx *mlx)
+{
+	t_mlx_img img;
 	int y;
 	int x;
-	int width;
-	int height;
-	void	*img;
 
 	y = 0;
-	img = mlx_xpm_file_to_image(mlx->mlx, "./trees.XPM", &width, &height);
-	while (y < map->height)
+	img.img1 = mlx_xpm_file_to_image(mlx->mlx, "./bob.xpm", &img.width, &img.height);
+	while (y < map->map_height)
 	{
 		x = 0;
-		while (x < map->width)
+		while (x < map->map_width)
 		{
-			mlx_put_image_to_window(mlx->mlx, mlx->win, img, x * 50, y * 50);
+			if (map->map_data[y][x] == 'P' )
+				mlx_put_image_to_window(mlx->mlx, mlx->win, img.img1, x * 50, y * 50);
+			x++;	
+		}
+		y++;
+	}
+}
+
+void	ft_create_objects(t_arg_map *map, t_mlx_mlx *mlx)
+{
+	t_mlx_img img;
+	int y;
+	int x;
+
+	y = 0;
+	img.img1 = mlx_xpm_file_to_image(mlx->mlx, "./burger1.xpm", &img.width, &img.height);
+	while (y < map->map_height)
+	{
+		x = 0;
+		while (x < map->map_width)
+		{
+			if (map->map_data[y][x] == 'C' )
+				mlx_put_image_to_window(mlx->mlx, mlx->win, img.img1, x * 50, y * 50);
+			x++;	
+		}
+		y++;
+	}
+}
+
+void	ft_create_wall_and_floor(t_arg_map *map, t_mlx_mlx *mlx)
+{
+	t_mlx_img img;
+	int y;
+	int x;
+
+	y = 0;
+	img.img1 = mlx_xpm_file_to_image(mlx->mlx, "./wall.xpm", &img.width, &img.height);
+	img.img2 = mlx_xpm_file_to_image(mlx->mlx, "./water.xpm", &img.width, &img.height);
+	while (y < map->map_height)
+	{
+		x = 0;
+		while (x < map->map_width)
+		{
+			if (map->map_data[y][x] == '1')
+				mlx_put_image_to_window(mlx->mlx, mlx->win, img.img1, x * 50, y * 50);
+			else if (map->map_data[y][x] == '0')
+				mlx_put_image_to_window(mlx->mlx, mlx->win, img.img2, x * 50, y * 50);
 			x++;
 		}
 		y++;
 	}
 }
 
-//void	ft_create_background(
-
 void	ft_map_init(char *arg, t_arg_map *map, t_mlx_mlx *mlx)
 {
 	mlx->mlx = mlx_init();
-    mlx->win = mlx_new_window(mlx->mlx, map->width * 50, map->height * 50, "So Long");
-  	mlx->img = mlx_new_image(mlx->mlx, map->width * 50, map->height * 50);
+    mlx->win = mlx_new_window(mlx->mlx, map->map_width * 50, map->map_height * 50, "So Long");
+  	mlx->img = mlx_new_image(mlx->mlx, map->map_width * 50, map->map_height * 50);
 //	mlx->addr = mlx_get_data_addr(mlx->img, &mlx->bits_per_pixel, &mlx->line_length, &mlx->endian);
-    mlx_loop(mlx);
 }
 
 void	ft_get_map(t_arg_map *map, char *argv)
@@ -84,11 +133,11 @@ void	ft_get_map(t_arg_map *map, char *argv)
 		perror("");
 		exit(1);
 	}
-	printf("%d\n", map->height);
-	map->map_data = malloc (sizeof(char*) * map->height + 1);
+	printf("%d\n", map->map_height);
+	map->map_data = malloc (sizeof(char*) * map->map_height + 1);
 	if (!map->map_data)
 		exit(1);
-	while (i < map->height)
+	while (i < map->map_height)
 	{
 		map->map_data[i] = get_next_line(fd);
 		i++;
@@ -96,7 +145,7 @@ void	ft_get_map(t_arg_map *map, char *argv)
 	close(fd);
 	map->map_data[i] = 00;
 	i = 0;
-	while (i < map->height)
+	while (i < map->map_height)
 	{
 		printf("%s", map->map_data[i]);
 		i++;
@@ -127,7 +176,7 @@ void	ft_get_width(char *argv, t_arg_map *map)
 		exit(1);
 	}
 	line = get_next_line(fd);
-	map->width = ft_strlen(line);
+	map->map_width = ft_strlen(line);
 	while (line)
 	{
 		ft_check_line(line, i++, map);
@@ -135,14 +184,14 @@ void	ft_get_width(char *argv, t_arg_map *map)
 		line = get_next_line(fd);
 		if (line)
 		{
-			if (ft_strlen(line) != map->width)
+			if (ft_strlen(line) != map->map_width)
 			{
 				perror("El mapa no es rectangulo");
 				exit(1);
 			}
 		}
 	}
-	map->width--;
+	map->map_width--;
 	close(fd);
 	if (map->chars[1] < 1 || map->chars[2] < 1)
 	{
@@ -162,7 +211,7 @@ void	ft_check_line(char *line, int line_counter, t_arg_map *map)
 
 	i = 0;
 	printf("%d\n", line_counter);
-	if(line_counter == 1 || line_counter == map->height)
+	if(line_counter == 1 || line_counter == map->map_height)
 	{
 		while (i < ft_strlen(line) - 1)
 		{
@@ -178,7 +227,7 @@ void	ft_check_line(char *line, int line_counter, t_arg_map *map)
 	{
 		while (i < ft_strlen(line) - 1)
 		{
-			if (line[0] != '1' || line[map->width - 2] != '1')
+			if (line[0] != '1' || line[map->map_width - 2] != '1')
 			{
 				perror("El mapa no esta cerrado correctamentee");
 				exit(1);
@@ -204,7 +253,7 @@ void	ft_get_height(char *argv, t_arg_map *map)
 	int		fd;
 	char	*line;
 	
-	map->height = 0;
+	map->map_height = 0;
 	fd = open(argv, O_RDONLY);
 	line = malloc (1);
 	if (fd == -1)
@@ -216,9 +265,9 @@ void	ft_get_height(char *argv, t_arg_map *map)
 	{
 		free(line);
 		line = get_next_line(fd);
-		map->height++;
+		map->map_height++;
 	}
 //	free(line);
 	close(fd);
-	map->height--;
+	map->map_height--;
 }

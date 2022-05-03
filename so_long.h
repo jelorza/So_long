@@ -9,8 +9,8 @@
 
 typedef struct map{
 	
-	int		width;
-	int 	height;
+	int		map_width;
+	int 	map_height;
 	int 	chars[3];
 	char	**map_data;
 	
@@ -28,6 +28,15 @@ typedef struct mlx{
 
 }	t_mlx_mlx;
 
+typedef struct win{
+
+	void	*img1;
+	void	*img2;
+	int		width;
+	int		height;
+
+}	t_mlx_img;
+
 char	*get_next_line(int fd);
 int		ft_strlen(char *str);
 void	ft_check_map(char *argv, t_arg_map *map);
@@ -36,7 +45,10 @@ void	ft_get_width(char *argv, t_arg_map *map);
 void	ft_check_line(char *line, int line_counter, t_arg_map *map);
 void	ft_get_map(t_arg_map *map, char *argv);
 void	ft_map_init(char *arg, t_arg_map *map, t_mlx_mlx *mlx);
-void	ft_create_map(char *arg, t_arg_map *map, t_mlx_mlx *mlx);
+void	ft_create_map(t_arg_map *map, t_mlx_mlx *mlx);
+void	ft_create_wall_and_floor(t_arg_map *map, t_mlx_mlx *mlx);
+void	ft_create_objects(t_arg_map *map, t_mlx_mlx *mlx);
+void	ft_create_player(t_arg_map *map, t_mlx_mlx *mlx);
 void	ft_free(t_arg_map *map);
 
 
