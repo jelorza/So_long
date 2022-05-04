@@ -1,6 +1,6 @@
 #include "so_long.h"
 
-//Tengo los hooks creados, voy con las funciones de los movimisntos
+// Movimiento up creando, no me crea la imagen. Teng dos funciones, uno me cambia la casilla en la que eestoy y el otro me canbia a la nueva casilla.
 
 int  main(int argc, char **argv)
 {
@@ -16,44 +16,75 @@ int  main(int argc, char **argv)
 		ft_hooks(&mlx, &map);
 		printf("Height %d\n", map.map_height);
 		printf("Width %d\n", map.map_width);
-		printf("C = %d\n", map.chars[1]);
-		ft_free(&map);
     	mlx_loop(mlx.mlx);
 	}
 	else
 		printf("argv error");
+	ft_free(&map);
 	system("leaks so_long");
 	return (0);
 }
 
-void	ft_free(t_arg_map *map)
+void	ft_change_up(t_arg_map *map, t_mlx_mlx *mlx, char c)
 {
-	int i;
+	t_mlx_img img;
 
-	printf("Height %d\n", map->map_height);
-	i = 0;
-	while (i < map->map_height)
+	if (map->map_data[(map->p_pos[0]) - 1][map->p_pos[1]] == 'C')
 	{
-		free(map->map_data[i]);
-		i++;
+		printf("objects = %d\n", map->chars[1]);
+		map->chars[1]--;
 	}
-	free(map->map_data);
+	map->map_data[0][1] = '0';
+	img.img1 = mlx_xpm_file_to_image(mlx->mlx, "./bob.xpm", &img.width, &img.height);
+	mlx_put_image_to_window(mlx->mlx, mlx->win, img.img1, map->p_pos[0] * 50, map->p_pos[1] * 50);
+
+
+}
+
+void	ft_change_img(t_arg_map *map, t_mlx_mlx *mlx)
+{
+	t_mlx_img img;
+
+	printf("objects = %d\n", map->chars[1]);
+	printf("%c\n", map->map_data[map->p_pos[0]][map->p_pos[1]]);
+	printf("%d\n", map->p_pos[0]);
+	printf("%d\n", map->p_pos[1]);
+	map->map_data[map->p_pos[0]][map->p_pos[1]] = '0';
+	printf("%c\n", map->map_data[map->p_pos[0]][map->p_pos[1]]);
+	map->p_pos[0]--;
+	printf("%d\n", map->p_pos[0]);
+//	mlx_destroy_image(mlx->mlx, img_ptr);
+//	img.img1 = mlx_xpm_file_to_image(mlx->mlx, "./water.xpm", &img.width, &img.height);
+//	mlx_put_image_to_window(mlx->mlx, mlx->win, img.img1, map->p_pos[0] * 50, map->p_pos[1] * 50);
+}
+
+void 	ft_move_up(t_arg_map *map, t_mlx_mlx *mlx)
+{
+	char charact;
+
+	if (map->map_data[(map->p_pos[0]) - 1][map->p_pos[1]] != '1')
+	{
+		charact = map->map_data[(map->p_pos[0]) - 1][map->p_pos[1]];
+		ft_change_img(map, mlx);
+	//	ft_change_up_img(map, mlx);
+	}
 }
 
 void	ft_get_moves(t_arg_map *map, t_mlx_mlx *mlx)
 {
 	if (mlx->key == 'w')
-		ft_move_p();
+		ft_move_up(map, mlx);
+/*
 	if (mlx->key == 'd')
 		ft_move_right();
 	if (mlx->key == 'a')
 		ft_move_left();
 	if (mlx->key == 's')
 		ft_move_down();
-	if (mlx->key == 'x')
-		ft_exit();
-	printf("%c\n", mlx->key);
-	
+	else if (mlx->key == 'x')
+		exit(0);
+*/
+	printf("%c\n", mlx->key);	
 }
 
 int	key_hook(int kc, t_arg_map *map, t_mlx_mlx *mlx)
@@ -75,6 +106,8 @@ int	key_hook(int kc, t_arg_map *map, t_mlx_mlx *mlx)
 
 void	ft_hooks(t_mlx_mlx *mlx, t_arg_map *map)
 {
+	int i = 0;
+//	mlx_hook(vars.win, 2, 1L<<0, close, &vars);
 	mlx_key_hook(mlx->win, key_hook, map);
 }
 
@@ -276,7 +309,11 @@ void	ft_check_line(char *line, int line_counter, t_arg_map *map)
 				exit(1);
 			}
 			else if(line[i] == 'P')
+			{
 				map->chars[0]++;
+				map->p_pos[0] = line_counter - 1;
+				map->p_pos[1] = i;
+			}
 			else if(line[i] == 'C')
 				map->chars[1]++;
 			else if(line[i] == 'E')
@@ -308,4 +345,18 @@ void	ft_get_height(char *argv, t_arg_map *map)
 //	free(line);
 	close(fd);
 	map->map_height--;
+}
+
+void	ft_free(t_arg_map *map)
+{
+	int i;
+
+	printf("Height %d\n", map->map_height);
+	i = 0;
+	while (i < map->map_height)
+	{
+		free(map->map_data[i]);
+		i++;
+	}
+	free(map->map_data);
 }

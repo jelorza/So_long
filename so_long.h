@@ -13,6 +13,7 @@ typedef struct map{
 	int 	map_height;
 	int 	chars[3];
 	char	**map_data;
+	int		p_pos[2];
 	
 }	t_arg_map;
 
@@ -52,6 +53,7 @@ void	ft_create_objects_and_exit(t_arg_map *map, t_mlx_mlx *mlx);
 void	ft_create_player(t_arg_map *map, t_mlx_mlx *mlx);
 void	ft_hooks(t_mlx_mlx *mlx, t_arg_map *map);
 void	ft_get_moves(t_arg_map *map, t_mlx_mlx *mlx);
+void	ft_move_up(t_arg_map *map, t_mlx_mlx *mlx);
 void	ft_free(t_arg_map *map);
 
 
