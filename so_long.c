@@ -4,8 +4,13 @@
 
 int  main(int argc, char **argv)
 {
+
 	t_arg_map map;
 	t_mlx_mlx mlx;
+//	t_mlx_img img;
+//	mlx = NULL;
+//	mlx = malloc (sizeof(t_mlx_mlx));
+//	mlx.img = img;
 
 	if (argc == 2 && argv[1][ft_strlen(argv[1]) -1] == 'r' && argv[1][ft_strlen(argv[1]) - 2] == 'e' && argv[1][ft_strlen(argv[1]) - 3] == 'b')
 	{
@@ -13,6 +18,7 @@ int  main(int argc, char **argv)
 		ft_get_map(&map, argv[1]);
 		ft_map_init(argv[1], &map, &mlx);
 		ft_create_map(&map, &mlx);
+		printf("prueba %d\n", mlx.imgs.prueba);
 		ft_hooks(&mlx, &map);
 		printf("Height %d\n", map.map_height);
 		printf("Width %d\n", map.map_width);
@@ -21,10 +27,10 @@ int  main(int argc, char **argv)
 	else
 		printf("argv error");
 	ft_free(&map);
-	system("leaks so_long");
 	return (0);
 }
 
+/*
 void	ft_change_up(t_arg_map *map, t_mlx_mlx *mlx, char c)
 {
 	t_mlx_img img;
@@ -37,14 +43,10 @@ void	ft_change_up(t_arg_map *map, t_mlx_mlx *mlx, char c)
 	map->map_data[0][1] = '0';
 	img.img1 = mlx_xpm_file_to_image(mlx->mlx, "./bob.xpm", &img.width, &img.height);
 	mlx_put_image_to_window(mlx->mlx, mlx->win, img.img1, map->p_pos[0] * 50, map->p_pos[1] * 50);
-
-
 }
-
+*/
 void	ft_change_img(t_arg_map *map, t_mlx_mlx *mlx)
 {
-	t_mlx_img img;
-
 	printf("objects = %d\n", map->chars[1]);
 	printf("%c\n", map->map_data[map->p_pos[0]][map->p_pos[1]]);
 	printf("%d\n", map->p_pos[0]);
@@ -53,9 +55,9 @@ void	ft_change_img(t_arg_map *map, t_mlx_mlx *mlx)
 	printf("%c\n", map->map_data[map->p_pos[0]][map->p_pos[1]]);
 	map->p_pos[0]--;
 	printf("%d\n", map->p_pos[0]);
-//	mlx_destroy_image(mlx->mlx, img_ptr);
-//	img.img1 = mlx_xpm_file_to_image(mlx->mlx, "./water.xpm", &img.width, &img.height);
-//	mlx_put_image_to_window(mlx->mlx, mlx->win, img.img1, map->p_pos[0] * 50, map->p_pos[1] * 50);
+//	mlx->imgs.prueba = 5;
+	printf("prueba %d\n", mlx->imgs.prueba);
+	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->imgs.img4, map->p_pos[0] * 50, map->p_pos[1] * 50);
 }
 
 void 	ft_move_up(t_arg_map *map, t_mlx_mlx *mlx)
@@ -72,6 +74,7 @@ void 	ft_move_up(t_arg_map *map, t_mlx_mlx *mlx)
 
 void	ft_get_moves(t_arg_map *map, t_mlx_mlx *mlx)
 {
+//	mlx->imgs.prueba = 5;
 	if (mlx->key == 'w')
 		ft_move_up(map, mlx);
 /*
@@ -89,6 +92,8 @@ void	ft_get_moves(t_arg_map *map, t_mlx_mlx *mlx)
 
 int	key_hook(int kc, t_arg_map *map, t_mlx_mlx *mlx)
 {
+
+//	printf("%d\n", mlx->img.prueba);
 	if (kc == 13)
 		mlx->key = 'w';
 	else if (kc == 2)
@@ -106,33 +111,43 @@ int	key_hook(int kc, t_arg_map *map, t_mlx_mlx *mlx)
 
 void	ft_hooks(t_mlx_mlx *mlx, t_arg_map *map)
 {
+	printf("prueba %d\n", mlx->imgs.prueba);
 	int i = 0;
-//	mlx_hook(vars.win, 2, 1L<<0, close, &vars);
-	mlx_key_hook(mlx->win, key_hook, map);
+	mlx_hook(mlx->win, 2, 1L<<0, key_hook, map);
+//	mlx_key_hook(mlx->win, key_hook, map);
+}
+
+void	ft_save_imgs(t_mlx_mlx *mlx)
+{
+	mlx->imgs.img1 = mlx_xpm_file_to_image(mlx->mlx, "./bob.xpm", &mlx->imgs.width, &mlx->imgs.height);
+	mlx->imgs.img2 = mlx_xpm_file_to_image(mlx->mlx, "./burger1.xpm", &mlx->imgs.width, &mlx->imgs.height);
+	mlx->imgs.img3 = mlx_xpm_file_to_image(mlx->mlx, "./wall.xpm", &mlx->imgs.width, &mlx->imgs.height);
+	mlx->imgs.img4 = mlx_xpm_file_to_image(mlx->mlx, "./water.xpm", &mlx->imgs.width, &mlx->imgs.height);
+	mlx->imgs.prueba = 5;
 }
 
 void	ft_create_map(t_arg_map *map, t_mlx_mlx *mlx)
-{
+{	
+	ft_save_imgs(mlx);
 	ft_create_wall_and_floor(map, mlx);
 	ft_create_objects_and_exit(map, mlx);
 	ft_create_player(map, mlx);
+	printf("prueba %d\n", mlx->imgs.prueba);
 }
 
 void	ft_create_player(t_arg_map *map, t_mlx_mlx *mlx)
 {
-	t_mlx_img img;
 	int y;
 	int x;
 
 	y = 0;
-	img.img1 = mlx_xpm_file_to_image(mlx->mlx, "./bob.xpm", &img.width, &img.height);
 	while (y < map->map_height)
 	{
 		x = 0;
 		while (x < map->map_width)
 		{
 			if (map->map_data[y][x] == 'P' )
-				mlx_put_image_to_window(mlx->mlx, mlx->win, img.img1, x * 50, y * 50);
+				mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->imgs.img1, x * 50, y * 50);
 			x++;	
 		}
 		y++;
@@ -141,19 +156,17 @@ void	ft_create_player(t_arg_map *map, t_mlx_mlx *mlx)
 
 void	ft_create_objects_and_exit(t_arg_map *map, t_mlx_mlx *mlx)
 {
-	t_mlx_img img;
 	int y;
 	int x;
 
 	y = 0;
-	img.img1 = mlx_xpm_file_to_image(mlx->mlx, "./burger1.xpm", &img.width, &img.height);
 	while (y < map->map_height)
 	{
 		x = 0;
 		while (x < map->map_width)
 		{
 			if (map->map_data[y][x] == 'C' )
-				mlx_put_image_to_window(mlx->mlx, mlx->win, img.img1, x * 50, y * 50);
+				mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->imgs.img2, x * 50, y * 50);
 			x++;	
 		}
 		y++;
@@ -162,22 +175,19 @@ void	ft_create_objects_and_exit(t_arg_map *map, t_mlx_mlx *mlx)
 
 void	ft_create_wall_and_floor(t_arg_map *map, t_mlx_mlx *mlx)
 {
-	t_mlx_img img;
 	int y;
 	int x;
 
 	y = 0;
-	img.img1 = mlx_xpm_file_to_image(mlx->mlx, "./wall.xpm", &img.width, &img.height);
-	img.img2 = mlx_xpm_file_to_image(mlx->mlx, "./water.xpm", &img.width, &img.height);
 	while (y < map->map_height)
 	{
 		x = 0;
 		while (x < map->map_width)
 		{
 			if (map->map_data[y][x] == '1')
-				mlx_put_image_to_window(mlx->mlx, mlx->win, img.img1, x * 50, y * 50);
+				mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->imgs.img3, x * 50, y * 50);
 			else if (map->map_data[y][x] == '0')
-				mlx_put_image_to_window(mlx->mlx, mlx->win, img.img2, x * 50, y * 50);
+				mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->imgs.img4, x * 50, y * 50);
 			x++;
 		}
 		y++;

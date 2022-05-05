@@ -7,6 +7,18 @@
 #include<stdlib.h>
 #include<mlx.h>
 
+typedef struct win{
+
+	void	*img1;
+	void	*img2;
+	void	*img3;
+	void	*img4;
+	int		width;
+	int		height;
+	int		prueba;
+
+}	t_mlx_img;
+
 typedef struct map{
 	
 	int		map_width;
@@ -27,17 +39,10 @@ typedef struct mlx{
 	int		endian;
 	int		line_length;
 	char	key;
+	t_mlx_img imgs;
 
 }	t_mlx_mlx;
 
-typedef struct win{
-
-	void	*img1;
-	void	*img2;
-	int		width;
-	int		height;
-
-}	t_mlx_img;
 
 char	*get_next_line(int fd);
 int		ft_strlen(char *str);
