@@ -16,6 +16,7 @@ typedef struct win{
 	void	*img5;
 	int		width;
 	int		height;
+	int		counter;
 
 }	t_mlx_img;
 

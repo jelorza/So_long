@@ -1,11 +1,12 @@
 #include "so_long.h"
 
-// Ya tengo todos los movimientos y pinto la salida cuando cojo todos los objetos. Tengo que cambiar el orden de las funciones al hace un movimiento para que desaparezca el objeto cuando me poso encima. Despues tengo que gestionar la salida. (con un booleano se si esta o no esta). Cuando me poso encima se cierra el programa. Tambien me falta gestioar el 'esc' y la 'x' roja. 
+// Me falta cerrar con la x dela ventana, mirar leaks de memorya y pasar norminet 
 
 int  main(int argc, char **argv)
 {
 
 	t_mlx_mlx mlx;
+	mlx.imgs.counter = 0;
 
 	if (argc == 2 && argv[1][ft_strlen(argv[1]) -1] == 'r' && argv[1][ft_strlen(argv[1]) - 2] == 'e' && argv[1][ft_strlen(argv[1]) - 3] == 'b')
 	{
@@ -14,21 +15,20 @@ int  main(int argc, char **argv)
 		ft_map_init(argv[1], &mlx);
 		ft_create_map(&mlx);
 		ft_hooks(&mlx);
-		printf("Height %d\n", mlx.map_height);
-		printf("Width %d\n", mlx.map_width);
     	mlx_loop(mlx.mlx);
 	}
 	else
 		printf("argv error");
-//	ft_free(&map);
+	ft_free(&mlx);
+//	system("leaks so_long");
 	return (0);
 }
-
 
 void	ft_change_up_img(t_mlx_mlx *mlx, char c)
 {
 	if (mlx->map_data[(mlx->p_pos[0])][mlx->p_pos[1]] == 'C')
 		mlx->chars[1]--;
+	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->imgs.img4, mlx->p_pos[1] * 50, mlx->p_pos[0] * 50);
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->imgs.img1, mlx->p_pos[1] * 50, mlx->p_pos[0] * 50);
 }
 
@@ -46,12 +46,7 @@ void	ft_change_pos(t_mlx_mlx *mlx, char c)
 
 void	ft_change_img(t_mlx_mlx *mlx, char c)
 {
-	printf("objects = %d\n", mlx->chars[1]);
-	printf("%c\n", mlx->map_data[mlx->p_pos[0]][mlx->p_pos[1]]);
-	printf("%d\n", mlx->p_pos[0]);
-	printf("%d\n", mlx->p_pos[1]);
 	mlx->map_data[mlx->p_pos[0]][mlx->p_pos[1]] = '0';
-	printf("%c\n", mlx->map_data[mlx->p_pos[0]][mlx->p_pos[1]]);
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->imgs.img4, mlx->p_pos[1] * 50, mlx->p_pos[0] * 50);
 	ft_change_pos(mlx, c);
 }
@@ -104,23 +99,43 @@ void	ft_move_right(t_mlx_mlx *mlx, char c)
 	}
 }
 
+void	ft_exit(t_mlx_mlx *mlx)
+{
+	mlx_clear_window(mlx->mlx, mlx->win);
+	mlx_destroy_window(mlx->mlx, mlx->win);
+	exit (0);
+}
+
+void	ft_you_win(t_mlx_mlx *mlx)
+{
+	printf("YOU WON\n");
+	mlx_clear_window(mlx->mlx, mlx->win);
+	mlx_destroy_window(mlx->mlx, mlx->win);
+	exit (0);
+}
+
 void	ft_get_moves(t_mlx_mlx *mlx)
 {
+	int boolean;
+
+	boolean = 0;
 	if (mlx->key == 'w')
 		ft_move_up(mlx, 'w');
 	else if (mlx->key == 'd')
 		ft_move_right(mlx, 'd');
 	else if (mlx->key == 'a')
 		ft_move_left(mlx, 'a');
-	if (mlx->key == 's')
+	else if(mlx->key == 's')
 		ft_move_down(mlx, 's');
-	if (mlx->chars[1] == 0)
-		ft_put_exit(mlx);
-/*
 	else if (mlx->key == 'x')
-		exit(0);
-*/
-	printf("%c\n", mlx->key);	
+		ft_exit(mlx);
+	if (mlx->chars[1] == 0)
+	{
+		ft_put_exit(mlx);
+		boolean = 1;
+	}
+	if (boolean == 1 && mlx->e_pos[1] == mlx->p_pos[1] && mlx->e_pos[0] == mlx->p_pos[0])
+		ft_you_win(mlx);
 }
 
 void	ft_put_exit(t_mlx_mlx *mlx)
@@ -130,7 +145,6 @@ void	ft_put_exit(t_mlx_mlx *mlx)
 
 int	key_hook(int kc, t_mlx_mlx *mlx)
 {
-	printf("%c\n", mlx->key);	
 	if (kc == 13)
 		mlx->key = 'w';
 	else if (kc == 2)
@@ -142,12 +156,13 @@ int	key_hook(int kc, t_mlx_mlx *mlx)
 	else if (kc == 53)
 		mlx->key = 'x';
 	if (kc == 13 || kc == 2 || kc == 0 || kc == 1 || kc == 53)
+	{
 		ft_get_moves(mlx);
+		mlx->imgs.counter++;
+		printf("mov %d\n", mlx->imgs.counter);
+	}
 	return (0);
 }
-
-
-
 
 void	ft_hooks(t_mlx_mlx *mlx)
 {
@@ -260,7 +275,6 @@ void	ft_map_init(char *arg, t_mlx_mlx *mlx)
 	mlx->mlx = mlx_init();
     mlx->win = mlx_new_window(mlx->mlx, mlx->map_width * 50, mlx->map_height * 50, "So Long");
   	mlx->img = mlx_new_image(mlx->mlx, mlx->map_width * 50, mlx->map_height * 50);
-//	mlx->addr = mlx_get_data_addr(mlx->img, &mlx->bits_per_pixel, &mlx->line_length, &mlx->endian);
 }
 
 void	ft_get_map(t_mlx_mlx *mlx, char *argv)
@@ -352,7 +366,6 @@ void	ft_check_line(char *line, int line_counter, t_mlx_mlx *mlx)
 	int i;
 
 	i = 0;
-	printf("%d\n", line_counter);
 	if(line_counter == 1 || line_counter == mlx->map_height)
 	{
 		while (i < ft_strlen(line) - 1)
@@ -422,7 +435,6 @@ void	ft_free(t_mlx_mlx *mlx)
 {
 	int i;
 
-	printf("Height %d\n", mlx->map_height);
 	i = 0;
 	while (i < mlx->map_height)
 	{
