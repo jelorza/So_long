@@ -1,10 +1,10 @@
 NAME = so_long
 
-SRC = so_long.c gnl/get_next_line.c gnl/get_next_line_utils.c
+SRC = so_long.c gnl/get_next_line.c gnl/get_next_line_utils.c check_map.c hook_movements.c create_map.c
 
 OBJS = $(SRC:.c=.o)
 
-CC = gcc
+CC = gcc -fsanitize=address -g3
 FLAGS = -Wall -Wextra -Werror
 
 RM = rm -r -f
