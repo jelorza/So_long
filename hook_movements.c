@@ -6,7 +6,7 @@
 /*   By: jelorza- <jelorza-@student.42urduli>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/11 19:34:55 by jelorza-          #+#    #+#             */
-/*   Updated: 2022/05/12 13:58:56 by jelorza-         ###   ########.fr       */
+/*   Updated: 2022/05/12 19:28:13 by jelorza-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,8 @@
 
 void	ft_hooks(t_mlx_mlx *mlx)
 {
-	int	i;
-
-	i = 0;
 	mlx_hook (mlx->win, 2, 1L << 0, key_hook, mlx);
-	mlx_mouse_hook (mlx->win, mouse_hook, mlx); 
-}
-
-int	mouse_hook(int button, int x, int y, t_mlx_mlx *mlx)
-{
-	printf("button\n");
-	printf("x = %d \n", x);
-	printf("y = %d \n", y);
+	mlx_hook(mlx->win, 17, 1L << 5, ft_exit, mlx); 
 }
 
 int	key_hook(int kc, t_mlx_mlx *mlx)
@@ -51,9 +41,6 @@ int	key_hook(int kc, t_mlx_mlx *mlx)
 
 void	ft_get_moves(t_mlx_mlx *mlx)
 {
-	int	boolean;
-
-	boolean = 0;
 	if (mlx->key == 'w')
 		ft_move_up(mlx, 'w');
 	else if (mlx->key == 'd')
@@ -65,10 +52,7 @@ void	ft_get_moves(t_mlx_mlx *mlx)
 	else if (mlx->key == 'x')
 		ft_exit(mlx);
 	if (mlx->chars[1] == 0)
-	{
 		ft_put_exit(mlx);
-		boolean = 1;
-	}
 }
 
 void	ft_move_up(t_mlx_mlx *mlx, char c)
@@ -78,7 +62,9 @@ void	ft_move_up(t_mlx_mlx *mlx, char c)
 	charact = mlx->map_data[(mlx->p_pos[0]) - 1][mlx->p_pos[1]];
 	if (charact != '1')
 	{
-		if (charact == 'E' && mlx->chars[1] == 0)
+		if (charact == 'V')
+			ft_is_killed(mlx); 
+		else if (charact == 'E' && mlx->chars[1] == 0)
 			ft_you_win(mlx);
 		else if (charact != 'E')
 		{
@@ -95,7 +81,9 @@ void	ft_move_right(t_mlx_mlx *mlx, char c)
 	charact = mlx->map_data[(mlx->p_pos[0])][mlx->p_pos[1] + 1];
 	if (charact != '1')
 	{
-		if (charact == 'E' && mlx->chars[1] == 0)
+		if (charact == 'V')
+			ft_is_killed(mlx); 
+		else if (charact == 'E' && mlx->chars[1] == 0)
 			ft_you_win(mlx);
 		else if (charact != 'E')
 		{
@@ -112,7 +100,9 @@ void	ft_move_left(t_mlx_mlx *mlx, char c)
 	charact = mlx->map_data[(mlx->p_pos[0])][mlx->p_pos[1] - 1];
 	if (charact != '1')
 	{
-		if (charact == 'E' && mlx->chars[1] == 0)
+		if (charact == 'V')
+			ft_is_killed(mlx); 
+		else if (charact == 'E' && mlx->chars[1] == 0)
 			ft_you_win(mlx);
 		if (charact != 'E')
 		{
@@ -122,14 +112,25 @@ void	ft_move_left(t_mlx_mlx *mlx, char c)
 	}
 }
 
+void	ft_is_killed(t_mlx_mlx *mlx)
+{
+	printf("YOU HAVE BEEN KILLED\n");
+	mlx_destroy_window(mlx->mlx, mlx->win);
+	ft_free(mlx);
+//	system("leaks so_long");
+	exit (0);
+}
+
 void	ft_move_down(t_mlx_mlx *mlx, char c)
 {
 	char	charact;
 	
 	charact = mlx->map_data[(mlx->p_pos[0]) + 1][mlx->p_pos[1]];
-	if (charact != '1' && charact != 'E')
+	if (charact != '1')
 	{
-		if (charact == 'E' && mlx->chars[1] == 0)
+		if (charact == 'V')
+			ft_is_killed(mlx); 
+		else if (charact == 'E' && mlx->chars[1] == 0)
 			ft_you_win(mlx);
 		else if (charact != 'E')
 		{
@@ -169,20 +170,21 @@ void	ft_change_img(t_mlx_mlx *mlx, char c)
 	ft_change_pos(mlx, c);
 }
 
-void	ft_exit(t_mlx_mlx *mlx)
+int	ft_exit(t_mlx_mlx *mlx)
 {
-	mlx_clear_window(mlx->mlx, mlx->win);
+	printf("YOU EXIT THE GAME\n");
 	mlx_destroy_window(mlx->mlx, mlx->win);
 	ft_free(mlx);
+//	system("leaks so_long");
 	exit (0);
+	return (0);
 }
 
 void	ft_you_win(t_mlx_mlx *mlx)
 {
 	printf("YOU WON\n");
-	mlx_clear_window(mlx->mlx, mlx->win);
 	mlx_destroy_window(mlx->mlx, mlx->win);
-//	system("leaks so_long");
+	system("leaks so_long");
 	ft_free(mlx);
 	exit (0);
 }

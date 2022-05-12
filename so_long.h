@@ -6,7 +6,7 @@
 /*   By: jelorza- <jelorza-@student.42urduli>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 10:49:16 by jelorza-          #+#    #+#             */
-/*   Updated: 2022/05/12 13:58:59 by jelorza-         ###   ########.fr       */
+/*   Updated: 2022/05/12 18:52:57 by jelorza-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ typedef struct win{
 	void	*img3;
 	void	*img4;
 	void	*img5;
+	void	*img6;
 	int		width;
 	int		height;
 	int		counter;
@@ -64,9 +65,9 @@ void	ft_get_line(int fd, t_mlx_mlx *mlx);
 void	ft_create_wall_and_floor(t_mlx_mlx *mlx);
 void	ft_create_objects_and_exit(t_mlx_mlx *mlx);
 void	ft_create_player(t_mlx_mlx *mlx);
+void	ft_create_enemy(t_mlx_mlx *mlx);
 void	ft_hooks(t_mlx_mlx *mlx);
 int		key_hook(int kc, t_mlx_mlx *mlx);
-int		mouse_hook(int button, int x, int y, t_mlx_mlx *mlx);
 void	ft_get_moves(t_mlx_mlx *mlx);
 void	ft_move_up(t_mlx_mlx *mlx, char c);
 void	ft_put_exit(t_mlx_mlx *mlx);
@@ -75,8 +76,9 @@ void	ft_move_up(t_mlx_mlx *mlx, char c);
 void	ft_move_right(t_mlx_mlx *mlx, char c);
 void	ft_move_down(t_mlx_mlx *mlx, char c);
 void	ft_move_left(t_mlx_mlx *mlx, char c);
-void	ft_exit(t_mlx_mlx *mlx);
+int		ft_exit(t_mlx_mlx *mlx);
 void	ft_you_win(t_mlx_mlx *mlx);
+void	ft_is_killed(t_mlx_mlx *mlx);
 void	ft_change_img(t_mlx_mlx *mlx, char c);
 void	ft_change_up_img(t_mlx_mlx *mlx, char charact);
 void	ft_save_imgs(t_mlx_mlx *mlx);

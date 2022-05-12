@@ -6,7 +6,7 @@
 /*   By: jelorza- <jelorza-@student.42urduli>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/11 17:24:26 by jelorza-          #+#    #+#             */
-/*   Updated: 2022/05/12 13:48:28 by jelorza-         ###   ########.fr       */
+/*   Updated: 2022/05/12 18:19:42 by jelorza-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,9 +91,14 @@ void	ft_get_line(int fd, t_mlx_mlx *mlx)
 
 void	ft_check_charact(t_mlx_mlx *mlx)
 {
-	if (mlx->chars[1] < 1 || mlx->chars[2] < 1)
+	if (mlx->chars[1] < 1)
 	{
-		printf("ERROR: El mapa no contiene ni 'e' ni 'c'");
+		printf("ERROR: El mapa no contiene objetos");
+		exit(1);
+	}
+	else if (mlx->chars[2] < 1)
+	{
+		printf("ERROR: El mapa no contiene salida");
 		exit(1);
 	}
 	else if (mlx->chars[0] != 1)
@@ -137,7 +142,7 @@ void	ft_check_line_end(char *line, int line_counter, t_mlx_mlx *mlx)
 			exit(1);
 		}
 		else if (line[i] != '1' && line[i] != '0' && line[i] != 'P'
-			&& line[i] != 'E' && line[i] != 'C')
+			&& line[i] != 'E' && line[i] != 'C' && line[i] != 'V')
 		{
 			printf("ERROR: El mapa contiene caracteres incorrectos");
 			exit(1);
