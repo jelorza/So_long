@@ -6,13 +6,11 @@
 /*   By: jelorza- <jelorza-@student.42urduli>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 17:03:34 by jelorza-          #+#    #+#             */
-/*   Updated: 2022/05/12 19:34:31 by jelorza-         ###   ########.fr       */
+/*   Updated: 2022/05/16 16:53:34 by jelorza-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
-
-// Mandatory terminado, y la parte del enemigo tambien. me faltarian dos partes del bonus, los sprites y el contador que ya vere si hacer.
 
 int	main(int argc, char **argv)
 {
@@ -32,7 +30,6 @@ int	main(int argc, char **argv)
 	}
 	else
 		printf("argv error");
-//	ft_free(&mlx);
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: jelorza- <jelorza-@student.42urduli>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 10:49:16 by jelorza-          #+#    #+#             */
-/*   Updated: 2022/05/12 18:52:57 by jelorza-         ###   ########.fr       */
+/*   Updated: 2022/05/16 18:11:36 by jelorza-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef struct mlx{
 char	*get_next_line(int fd);
 int		ft_strlen(char *str);
 void	ft_check_map(char *argv, t_mlx_mlx *mlx);
+void	ft_check_if_empty(char *line);
 void	ft_get_height(char *argv, t_mlx_mlx *mlx);
 void	ft_get_width(char *argv, t_mlx_mlx *mlx);
 void	ft_check_line(char *line, int line_counter, t_mlx_mlx *mlx);
